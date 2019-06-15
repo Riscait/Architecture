@@ -1,0 +1,105 @@
+@startuml MVVM_ClassDiagram
+title MVVM Class Diagram
+
+' ----------------------------------------
+' 共通Model
+' ----------------------------------------
+class View {
+
+}
+note left: ViewModelにイベントを伝える\nViewModelから受け取ったデータの反映
+
+class ViewModel {
+    someEntity
+    init(someUseCase)
+}
+note left: Viewで表示するEntityの公開\nModelに処理を依頼
+
+package Model #ffe {
+    class UseCase {
+        init(protocolを注入)
+    }
+
+    class Request <Request> << (S, SkyBlue) >> {
+        typealias Response = Entity
+    }
+
+    class Repository << (P, Pink) >> {
+
+    }
+    class RepositoryImpl {
+
+    }
+
+    class Entity << (S, PaleGreen) >> {
+        title
+        description
+    }
+}
+' ----------------------------------------
+' 関連
+' ----------------------------------------
+View --> ViewModel: UI Event
+View <-- ViewModel: Data Binding
+
+ViewModel --> UseCase: Request
+ViewModel <-- UseCase: Data
+
+UseCase --> Request: Request
+UseCase <-- Request: Response
+
+UseCase --> Repository: CRUD
+UseCase <-- Repository: Data, Result
+
+Request --> Entity: Knows about
+Repository --> Entity: Knows about
+Repository <|-- RepositoryImpl: 実現
+
+' ----------------------------------------
+' オプション設定
+' ----------------------------------------
+' 空のフィールドは表示しない
+hide empty members
+' 影をなくす
+skinparam shadowing false
+
+@enduml
+' ----------------------------------------
+' 参考URL
+' ----------------------------------------
+https://speakerdeck.com/kawabe/eight-ioswozhi-eruakitekutiya?slide=55
+
+' ----------------------------------------
+' 使用方法まとめ
+' ----------------------------------------
+' 関係性
+クラス名 線種の記号 クラス名 [: ラベル]
+
+' スタティック
+{static}
+
+' 可視性
+- private
+# protected
+~ package private
++ public
+
+' 注釈
+note position of クラス名 : コメント
+
+クラスの定義の下に書く
+note position : コメント
+
+' 関連
+--
+<---
+' 汎化
+<|--
+' 実現
+<|..
+' Composition（合成）
+*-- 
+' Aggregation（集約）
+o-- 
+' 依存
+<..
